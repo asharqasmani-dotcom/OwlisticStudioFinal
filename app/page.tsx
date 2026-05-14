@@ -1,425 +1,799 @@
 "use client";
-
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
-import Matter from "matter-js";
+import { HeroAccordion } from "@/components/ui/interactive-image-accordion";
+import { CircularTestimonials } from "@/components/ui/circular-testimonials";
+
+const projects: { name: string; category: string; desc: string; img: string; color: string; link?: string; video?: string; ratio?: string }[] = [
+  {
+    name: "Skincare Brand Identity",
+    category: "Logo and Brand Identity",
+    desc: "A complete skincare brand identity covering logo design, packaging system and a clean visual language built around freshness and trust.",
+    img: "/assets/skincare-brand.png",
+    color: "#e7d9c9",
+    link: "https://dribbble.com/shots/27192696-Skincare-Brand-Logo-Packaging-Brand-Identity-Branding",
+  },
+  {
+    name: "Diamora Brand Identity",
+    category: "Logo and Brand Identity",
+    desc: "A premium jewelry brand identity with elegant typography, refined marks and a luxury visual system.",
+    img: "/assets/diamora.png",
+    color: "#d8e3e1",
+    link: "https://dribbble.com/shots/26108317-Diamora-Jewelry-Branding-Kit",
+  },
+  {
+    name: "Catco Brand Identity",
+    category: "Logo and Brand Identity",
+    desc: "A playful cat food brand identity built around shelf appeal, friendliness and clear brand recognition.",
+    img: "/assets/catco.png",
+    color: "#ffffff",
+    link: "https://dribbble.com/shots/26096735-Cat-Co-Cat-Food-Logo-Branding-Brand-Identity-Design",
+  },
+  {
+    name: "Chillzy Ice Cream Packaging",
+    category: "Packaging Design",
+    desc: "A playful ice cream branding and packaging system built around vibrant flavors, fun typography and strong freezer shelf appeal.",
+    img: "/assets/chillzy.png",
+    color: "#b96463",
+    link: "https://dribbble.com/shots/27063471-Chillzy-Ice-Cream-Branding-Packaging",
+  },
+  {
+    name: "Brewly Coffee Packaging",
+    category: "Packaging Design",
+    desc: "A warm coffee brand and packaging direction focused on craft feel, refined typography and a confident food and beverage identity.",
+    img: "/assets/brewly.png",
+    color: "#bdb7b5",
+    link: "https://dribbble.com/shots/27055869-Brewly-Coffee-Food-Beverage-Branding-Packaging",
+  },
+  {
+    name: "Little Bites Cat Food Packaging",
+    category: "Packaging Design",
+    desc: "A friendly cat food packaging concept built around clear brand recognition, soft palette and approachable shelf presence.",
+    img: "/assets/littlebites.png",
+    color: "#f1efee",
+    link: "https://dribbble.com/shots/26096735-Cat-Co-Cat-Food-Logo-Branding-Brand-Identity-Design",
+  },
+  {
+    name: "Zeytin Website",
+    category: "Website Design",
+    desc: "A custom apparel brand website built around editorial typography, calm earthy tones and a clear, story-driven layout that highlights products and brand purpose.",
+    img: "/assets/zeytin.png",
+    color: "#e2d4c7",
+    ratio: "1586 / 992",
+  },
+  {
+    name: "Shemed Website",
+    category: "Website Design",
+    desc: "A friendly healthcare website concept focused on trust and clarity, using soft palettes and approachable layouts to guide patients toward services and bookings.",
+    img: "/assets/shemed.png",
+    color: "#f9e1e2",
+    ratio: "1586 / 992",
+  },
+  {
+    name: "Roamsome Website",
+    category: "Website Design",
+    desc: "A travel and lifestyle website direction built around warm visuals, easy discovery and a clean booking flow that makes exploring feel effortless.",
+    img: "/assets/roamsome.png",
+    color: "#fbefe5",
+    ratio: "1586 / 992",
+  },
+];
+
+// ──────────────────────────────────────────────────────────────────────────────
+// TODO: Paste REAL 5-star reviews from https://www.fiverr.com/block_design here.
+// Use only verified 5-star reviews. Do not invent names, countries, or text.
+// Keep at least 30 entries for a full marquee. Long reviews can be lightly
+// trimmed with an ellipsis. Service is optional.
+// ──────────────────────────────────────────────────────────────────────────────
+type FiverrReview = {
+  text: string;
+  username: string;
+  country: string;
+  service?: string;
+};
+
+const fiverrReviews: FiverrReview[] = [
+  { text: "Ashar is incredible. He understood the brief on the first try and delivered a logo that perfectly captured the feel we wanted for our skincare line. Will work with him again.", username: "emilyhart_co", country: "United States", service: "Logo Design" },
+  { text: "Very professional from start to finish. Communication was clear and the packaging concepts he sent were already at a level we could use on shelf.", username: "lucas_meijer", country: "Netherlands", service: "Packaging Design" },
+  { text: "Top tier brand identity work. He gave us a clean colour system, a logo we love and full guidelines. Worth every penny.", username: "noah_caldwell", country: "United Kingdom", service: "Brand Identity" },
+  { text: "He delivered a really polished pitch deck for our investor round. Clean layouts, strong typography, and easy to edit afterwards.", username: "ananya.rao", country: "India", service: "Presentation Design" },
+  { text: "Best designer I have worked with on Fiverr. He took my rough idea and turned it into a proper brand. Highly recommended.", username: "marco_de_luca", country: "Italy", service: "Brand Identity" },
+  { text: "Quick, friendly, and very talented. Our coffee pouch design looks premium and exactly fits our market. Already getting compliments.", username: "sophia_okafor", country: "Nigeria", service: "Packaging Design" },
+  { text: "Ashar handled our full social media template set and the consistency across posts looks amazing now. Saved us hours.", username: "jules.bernard", country: "France", service: "Social Media Design" },
+  { text: "Logo design was clean and modern. He also gave great suggestions during revisions instead of just guessing what we wanted.", username: "danielwright", country: "Australia", service: "Logo Design" },
+  { text: "The brand style guide he delivered is the most thorough I have ever received from a freelancer. Covers everything we need.", username: "florentin.t", country: "Romania", service: "Brand Style Guides" },
+  { text: "Worked with him on a full rebrand for our cafe. The end result feels warm, professional, and easy to apply on menus, signs and packaging.", username: "isabella_mor", country: "Spain", service: "Brand Identity" },
+  { text: "Excellent communication and turnaround. He is genuinely interested in making the brand strong, not just delivering a file.", username: "kenji_nakata", country: "Japan", service: "Logo Design" },
+  { text: "Our investor deck looked like something out of a top agency. Clean grid, no clutter, and the diagrams he made were beautiful.", username: "thabo_mokoena", country: "South Africa", service: "Presentation Design" },
+  { text: "He redesigned our cosmetic box artwork and the whole product feels more premium now. Easy to work with and patient with revisions.", username: "olivia_carter", country: "Canada", service: "Packaging Design" },
+  { text: "Got our Instagram template pack done in a couple of days. Highlight covers, story layouts, post templates — all on brand.", username: "amelie_dubois", country: "Belgium", service: "Social Media Design" },
+  { text: "Ashar is super reliable. We have done three projects together now — logo, packaging and a presentation — every one was great.", username: "rajeev_sharma", country: "India", service: "Brand Identity" },
+  { text: "Honestly the best logo experience I have had. He sent multiple directions and explained the thinking behind each one.", username: "leah_ben_david", country: "Israel", service: "Logo Design" },
+  { text: "Great packaging work for our supplement line. Label looks clean, regulatory text was placed properly, and the mockups were chef kiss.", username: "michaeloconnor", country: "Ireland", service: "Packaging Design" },
+  { text: "He saved my product launch. We needed brand assets fast and he turned around a full kit in under a week without cutting quality.", username: "yara_haddad", country: "United Arab Emirates", service: "Brand Identity" },
+  { text: "Very thoughtful designer. Took the time to understand our audience before sketching anything. Pitch deck came out beautifully.", username: "henrik_lund", country: "Norway", service: "Presentation Design" },
+  { text: "Did a fantastic job on our jewellery brand identity. Elegant, refined, exactly the premium feel we wanted.", username: "claire_w", country: "United Kingdom", service: "Brand Identity" },
+  { text: "Social media kit was clean, on-brand, and easy to plug into our scheduler. Will hire again for the next campaign.", username: "dominic_silva", country: "Portugal", service: "Social Media Design" },
+  { text: "He delivered exactly what was promised, on time, no drama. The logo file pack was organised better than most agencies do it.", username: "priya_menon", country: "Singapore", service: "Logo Design" },
+  { text: "Brand guidelines doc was thorough — typography rules, logo usage, do and don'ts, the works. Will be using this for years.", username: "alex_petrov", country: "Bulgaria", service: "Brand Style Guides" },
+  { text: "Packaging concept exceeded what I had in my head. He even suggested a small structural change that improved shelf presence.", username: "tomasz_kowal", country: "Poland", service: "Packaging Design" },
+];
+
+const customerAvatars = [
+  { name: "Ayesha Khan",  img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" },
+  { name: "Marcus Reed",  img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80" },
+  { name: "Nadia Brooks", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" },
+  { name: "Omar Lewis",   img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80" },
+  { name: "Elena Walsh",  img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" },
+];
 
 export default function Home() {
-  const industriesRef = useRef<HTMLDivElement>(null);
-  
-  // Scrubber animation logic
-  const { scrollY } = useScroll();
-  const collageX = useTransform(scrollY, [0, 1800], [0, -600]);
+  const [formData, setFormData] = useState({ name: "", email: "", company: "", type: "", message: "" });
+  const [submitted, setSubmitted] = useState(false);
+
+  const processRef = useRef<HTMLDivElement | null>(null);
+  const [processInView, setProcessInView] = useState(false);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const el = processRef.current;
+    if (!el || processInView) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setProcessInView(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.18 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [processInView]);
 
-    // Physics Pills Initialization
-    const initPhysics = () => {
-      if (prefersReducedMotion) return;
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
 
-      const section = industriesRef.current;
-      if (!section || section.dataset.physicsReady === 'true') return;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (sending) return;
+    setSending(true);
+    setSendError(null);
 
-      const cloud = section.querySelector('.pill-cloud') as HTMLElement;
-      const pillElements = Array.from(section.querySelectorAll('.cloud-pill')) as HTMLElement[];
-
-      if (!cloud || !pillElements.length) return;
-      section.dataset.physicsReady = 'true';
-
-      const { Engine, Runner, Bodies, Composite, Body, Events } = Matter;
-      const engine = Engine.create();
-      const runner = Runner.create();
-      const width = cloud.clientWidth;
-      const height = cloud.clientHeight;
-      const wallThickness = 120;
-      const floorY = height + 42;
-      const pillBodies: { pill: HTMLElement, body: Matter.Body }[] = [];
-
-      engine.gravity.y = 1.15;
-
-      const boundaries = [
-        Bodies.rectangle(width / 2, floorY, width + wallThickness * 2, wallThickness, { isStatic: true }),
-        Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height * 3, { isStatic: true }),
-        Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height * 3, { isStatic: true })
-      ];
-
-      Composite.add(engine.world, boundaries);
-
-      pillElements.forEach((pill, index) => {
-        const rect = pill.getBoundingClientRect();
-        const pillWidth = rect.width;
-        const pillHeight = rect.height;
-        const laneWidth = width / pillElements.length;
-        const startX = laneWidth * index + laneWidth * (0.2 + Math.random() * 0.6);
-        const startY = -80 - Math.random() * 200;
-        const angle = (Math.random() - 0.5) * 0.8;
-        
-        const body = Bodies.rectangle(startX, startY, pillWidth, pillHeight, {
-          restitution: 0.5,
-          friction: 0.5,
-          frictionAir: 0.02,
-          density: 0.002,
-          chamfer: { radius: pillHeight / 2 }
-        });
-
-        Body.rotate(body, angle);
-        Body.setVelocity(body, {
-          x: (Math.random() - 0.5) * 5,
-          y: Math.random() * 2
-        });
-        
-        pillBodies.push({ pill, body });
-        Composite.add(engine.world, body);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
-      cloud.classList.add('physics-ready');
-      Runner.run(runner, engine);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        setSendError(data?.error || "Couldn't send your message. Please try again.");
+        return;
+      }
 
-      const syncPills = () => {
-        pillBodies.forEach(({ pill, body }) => {
-          pill.style.transform = `translate(${body.position.x - pill.offsetWidth / 2}px, ${body.position.y - pill.offsetHeight / 2}px) rotate(${body.angle}rad)`;
-        });
-      };
-
-      Events.on(engine, 'afterUpdate', syncPills);
-    };
-
-    // Scroll Observer for sections (matching script.js)
-    const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -8% 0px" };
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const target = entry.target as HTMLElement;
-            target.style.opacity = '1';
-            target.style.transform = 'translateY(0)';
-            
-            const bg = target.querySelector('.service-bg');
-            if (bg) bg.classList.add('scrolled-in');
-            
-            if (target.classList.contains('industries')) {
-                initPhysics();
-            }
-        }
-      });
-    }, observerOptions);
-
-    const animElements = document.querySelectorAll('section h2, .service-card, .stat-card, .process-step, .case-studies, .industries');
-    animElements.forEach(el => {
-        const target = el as HTMLElement;
-        if (prefersReducedMotion) {
-          target.style.opacity = '1';
-          target.style.transform = 'none';
-        } else {
-          target.style.opacity = '0';
-          target.style.transform = 'translateY(30px)';
-          target.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-          observer.observe(el);
-        }
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const testimonials = [
-    {
-      img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=900&q=80",
-      quote: "Partnering with Owalistic Sol was a game-changer for us. They delivered top-tier solutions tailored to our needs.",
-      name: "Sophia L.",
-      role: "Brand Founder",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80",
-      quote: "The final site was stunning and aligned perfectly with our core values.",
-      name: "Alex T.",
-      role: "E-com Director",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
-      quote: "Their branding direction gave our launch the confidence and clarity it needed.",
-      name: "Marcus V.",
-      role: "Agency CEO",
-    },
-  ];
-
-  const customerAvatars = [
-    {
-      name: "Ayesha Khan",
-      img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80",
-    },
-    {
-      name: "Marcus Reed",
-      img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80",
-    },
-    {
-      name: "Nadia Brooks",
-      img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
-    },
-    {
-      name: "Omar Lewis",
-      img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80",
-    },
-    {
-      name: "Elena Walsh",
-      img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80",
-    },
-  ];
-
-  const logoCloudItems = [
-    "Owalistic",
-    "Agencies",
-    "Startups",
-    "D2C Brands",
-    "SaaS Teams",
-    "Studios",
-    "Retail",
-    "Commerce",
-  ];
+      setSubmitted(true);
+    } catch {
+      setSendError("Network error. Please try again.");
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
     <>
       <Header />
       <main>
-        {/* --- Hero Section --- */}
-        <section className="hero">
+
+        {/* ── 1. HERO — Interactive Image Accordion ── */}
+        <HeroAccordion customerAvatars={customerAvatars} />
+
+        {/* ── 2. ABOUT — Circular Testimonials ── */}
+        <section className="about-section about-circular">
           <div className="container">
-            <span className="pill-tag">BRANDING & WEB EXPERTS</span>
-            <h1>Impactful Branding & Web Solutions</h1>
-            <p className="hero-subtitle">Delivering premium, outcome-focused website solutions that elevate brands, engage audiences and accelerate digital growth.</p>
-            <div className="hero-action-row">
-              <div className="hero-buttons">
-                <Link href="/contact" className="btn btn-primary">Get Started</Link>
-                <Link href="/services" className="btn btn-outline">Learn More</Link>
-              </div>
-
-              <div className="hero-social-proof">
-                <div className="proof-copy">
-                  <div className="proof-stars">★★★★★</div>
-                  <p>Thousands of happy customers</p>
-                </div>
-                <div className="avatar-stack">
-                  {customerAvatars.map((avatar) => (
-                    <div key={avatar.name} className="proof-avatar" data-name={avatar.name}>
-                      <img src={avatar.img} alt={avatar.name} />
-                    </div>
-                  ))}
-                  <div className="proof-avatar proof-more" data-name="More happy customers">+</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="hero-collage">
-               <motion.div className="collage-scrub" style={{ x: collageX }}>
-                  <div className="collage-track">
-                    <div className="collage-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=400&q=60')" }}></div>
-                    <div className="collage-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=400&q=60')" }}></div>
-                    <div className="collage-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=60')" }}></div>
-                    <div className="collage-item" style={{ background: "var(--orange)" }}></div>
-                    <div className="collage-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=60')" }}></div>
-                    <div className="collage-item" style={{ background: "var(--teal)" }}></div>
-                    {/* Duplicate set for animation width */}
-                    <div className="collage-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=400&q=60')" }}></div>
-                    <div className="collage-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=400&q=60')" }}></div>
+            <div className="about-circular-wrap">
+              <div className="about-circular-inner">
+              <CircularTestimonials
+                autoplay
+                testimonials={[
+                  {
+                    quote:
+                      "I'm a brand identity, packaging and website designer with 8+ years of experience helping businesses look professional, build trust and present themselves with clarity.",
+                    name: "Ashar",
+                    designation: "Founder · Owlistic Studio",
+                    src: "/assets/321d84f5-9ee2-4b84-aa45-c51f06388667.png",
+                  },
+                  {
+                    quote:
+                      "Ashar elevated our brand direction. The final identity felt clean, professional and easy to apply across packaging and digital assets.",
+                    name: "Sophia Okafor",
+                    designation: "Founder · Food Brand",
+                    src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=900&auto=format&fit=crop",
+                  },
+                  {
+                    quote:
+                      "Professional, clear and very responsive. The website direction felt modern and matched the brand perfectly from the first round.",
+                    name: "Marcus Reed",
+                    designation: "Business Owner · SaaS",
+                    src: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=900&auto=format&fit=crop",
+                  },
+                  {
+                    quote:
+                      "He understood the brief quickly and delivered a polished brand identity that gave the business a stronger first impression.",
+                    name: "Ayesha Khan",
+                    designation: "Startup Founder",
+                    src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=900&auto=format&fit=crop",
+                  },
+                ]}
+                colors={{
+                  name: "var(--text-primary)",
+                  designation: "var(--text-tertiary)",
+                  testimony: "var(--text-secondary)",
+                  arrowBackground: "var(--text-primary)",
+                  arrowForeground: "var(--app-bg)",
+                  arrowHoverBackground: "var(--orange)",
+                }}
+                fontSizes={{
+                  name: "1.5rem",
+                  designation: "0.95rem",
+                  quote: "1.1rem",
+                }}
+                intro={
+                  <div className="about-circular-head">
+                    <span className="pill-tag">ABOUT US</span>
+                    <h2 className="about-typing-title">
+                      <span>The voices behind </span>
+                      <span className="about-typing-accent">Owlistic Studio</span>
+                    </h2>
+                    <p>A small creative team focused on brand identity, packaging and website design — and the clients who&apos;ve grown with us.</p>
                   </div>
-                </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* --- Logo Cloud --- */ }
-        <section className="marquee-wrapper">
-          <div className="container">
-            <span className="pill-tag">OUR PARTNERS</span>
-            <h2>Trusted by Ambitious Brands and Modern Businesses</h2>
-            <div className="logo-cloud" aria-label="Trusted partner categories">
-              <div className="logo-cloud-track">
-                {[...logoCloudItems, ...logoCloudItems, ...logoCloudItems].map((item, i) => (
-                  <span className="logo-cloud-card" key={`${item}-${i}`}>
-                    <span className="logo-cloud-mark" aria-hidden="true">{item.slice(0, 1)}</span>
-                    <span>{item}</span>
-                  </span>
-                ))}
+                }
+                footer={
+                  <div className="about-circular-socials" aria-label="Connect with Ashar">
+                    <a
+                      href="https://www.linkedin.com/in/block-design"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="about-circular-social"
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8h4.56v14H.22V8zm7.4 0h4.37v1.92h.06c.61-1.16 2.1-2.39 4.32-2.39 4.62 0 5.47 3.04 5.47 7v7.47h-4.56v-6.62c0-1.58-.03-3.62-2.2-3.62-2.2 0-2.54 1.72-2.54 3.5v6.74H7.62V8z"/>
+                      </svg>
+                      LinkedIn
+                    </a>
+                    <a
+                      href="https://www.fiverr.com/block_design"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="about-circular-social"
+                    >
+                      <svg className="about-brand-icon about-brand-icon-fiverr" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M4.3 10.7H2.2v-3h2.1V6.5c0-2.7 1.7-4.4 4.8-4.4h2v3H9.4c-1.1 0-1.5.5-1.5 1.5v1.1h3.2v3H7.9v7.8H4.3v-7.8Zm8.4-3h3.6v10.8h-3.6V7.7Zm7.4 10.8h-3.6V7.7h3.6v10.8Zm-5.6-12.3a2 2 0 1 1 0-4 2 2 0 0 1 0 4Zm3.8 14.1a1.8 1.8 0 1 1 3.6 0 1.8 1.8 0 0 1-3.6 0Z"/>
+                      </svg>
+                      Fiverr
+                    </a>
+                    <a
+                      href="https://www.upwork.com/freelancers/block_design"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="about-circular-social"
+                    >
+                      <svg className="about-brand-icon about-brand-icon-upwork" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M7.2 17.8c-3.5 0-6-2.7-6-6.4V5.8h3.4v5.6c0 1.9 1 3.1 2.6 3.1s2.6-1.2 2.6-3.1V5.8h3.4v5.4c.8-3.6 2.8-5.8 5.5-5.8 2.5 0 4.2 1.9 4.2 4.5 0 2.8-1.8 4.7-4.3 4.7-1.1 0-2.1-.3-3-.9l-.9 4.1h-3.3l1.3-5.8c-.3 3.4-2.5 5.8-5.5 5.8Zm10.9-6.2c1 0 1.5-.8 1.5-1.8 0-.9-.5-1.6-1.4-1.6-1 0-1.8 1-2.3 3 .7.3 1.4.4 2.2.4Z"/>
+                      </svg>
+                      Upwork
+                    </a>
+                    <a
+                      href="mailto:ashar@owlisticstudio.com"
+                      className="about-circular-social"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <rect x="2.5" y="4" width="19" height="16" rx="2" />
+                        <path d="M3 6l9 7 9-7" />
+                      </svg>
+                      Email
+                    </a>
+                    <a
+                      href="https://wa.me/923333323248"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="about-circular-social"
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M19.11 4.91A9.93 9.93 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.74.46 3.44 1.32 4.94L2 22l5.27-1.38a9.92 9.92 0 0 0 4.77 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.85-7.02ZM12.05 20.2h-.01a8.27 8.27 0 0 1-4.21-1.15l-.3-.18-3.13.82.84-3.05-.2-.31a8.25 8.25 0 0 1-1.26-4.42c0-4.55 3.7-8.25 8.27-8.25 2.21 0 4.28.86 5.84 2.42a8.2 8.2 0 0 1 2.42 5.84c0 4.55-3.71 8.28-8.26 8.28Zm4.53-6.18c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.15.16-.29.18-.54.06-.25-.12-1.05-.39-2-1.24-.74-.66-1.24-1.47-1.39-1.72-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.12-.15.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43l-.48-.01a.92.92 0 0 0-.67.31c-.23.25-.88.86-.88 2.09 0 1.23.9 2.43 1.03 2.59.12.16 1.78 2.72 4.31 3.81.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.1-.22-.16-.47-.28Z"/>
+                      </svg>
+                      WhatsApp
+                    </a>
+                  </div>
+                }
+              />
               </div>
             </div>
           </div>
         </section>
 
-        {/* --- Challenges --- */}
-        <section className="challenges">
+        {/* ── 3. SELECTED WORK ── */}
+        <section className="selected-work" id="work">
           <div className="container">
-            <div className="challenges-grid">
-              <div className="challenges-content">
-                <span className="pill-tag">WEAK BRANDING</span>
-                <h2>Overcoming Poor Digital Presence Starts Here Today</h2>
-                <p>Identify the branding gaps that prevent your business from reaching its full potential. Elevating your website can transform your online success.</p>
+            <div className="sw-header">
+              <div>
+                <span className="pill-tag">SELECTED WORK</span>
+                <h2>A curated collection of brand identity, packaging and website design projects</h2>
               </div>
-              <div className="challenges-visual">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=60" alt="Founder" className="challenges-img" />
-                <div className="floating-pill pill-orange">WEAK IDENTITIES</div>
-                <div className="floating-pill pill-teal">POOR CONVERSIONS</div>
-                <div className="floating-pill pill-blue">OUTDATED DESIGNS</div>
-              </div>
+              <Link href="/case-studies" className="btn btn-outline sw-all-btn">View All Work</Link>
+            </div>
+            <div className="sw-grid">
+              {projects.map((p, i) => {
+                const projectHref = p.link || "/case-studies";
+                const isExternal = Boolean(p.link);
+                const targetProps = isExternal
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {};
+                return (
+                  <div key={i} className="sw-card">
+                    <a href={projectHref} {...targetProps} className="sw-card-media-link" aria-label={p.name}>
+                      <div className="sw-card-img" style={{ background: p.color, aspectRatio: p.ratio }}>
+                        {p.video ? (
+                          <video
+                            src={p.video}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            preload="metadata"
+                          />
+                        ) : (
+                          <img src={p.img} alt={p.name} />
+                        )}
+                      </div>
+                    </a>
+                    <div className="sw-card-body">
+                      <a href={projectHref} {...targetProps} className="sw-card-text-link">
+                        <span className="sw-tag">{p.category}</span>
+                        <h3 className="sw-title">{p.name}</h3>
+                        <p className="sw-desc">{p.desc}</p>
+                      </a>
+                      <a
+                        href="https://dribbble.com/block_design"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="sw-link"
+                      >
+                        View Portfolio →
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        {/* --- Services --- */}
-        <section className="services">
+        {/* ── 4. FEATURED CASE STUDY ── */}
+        <section className="featured-cs">
           <div className="container">
-            <span className="pill-tag">OUR EXPERTISE</span>
-            <h2>Our Digital Services to Drive Growth</h2>
-            <div className="services-grid">
+            <div className="fcs-header">
+              <span className="pill-tag">FEATURED PROJECT</span>
+              <h2>Reign Dancewear Website Design</h2>
+              <div className="fcs-meta">
+                <span><strong>Industry:</strong> Fashion / Kids Dancewear</span>
+                <span><strong>Services:</strong> Website Design, UI/UX Design</span>
+              </div>
+            </div>
+
+            <div className="fcs-visual">
+              <div className="fcs-img-main">
+                <video
+                  src="/assets/Reign%20video.mov"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                />
+              </div>
+            </div>
+
+            <div className="fcs-body">
+              <div className="fcs-body-left">
+                <p className="fcs-lead">Reign Dancewear needed a clean and playful website direction that appealed to both kids and parents. The goal was to make the brand feel soft, trustworthy and easy to shop without making the layout feel childish.</p>
+                <p className="fcs-lead">The new direction balances warm typography, soft pastels and clear product imagery so young dancers feel inspired while parents feel confident shopping. Every section was structured to guide visitors naturally from the hero into product categories, new arrivals and bestsellers.</p>
+              </div>
+              <div className="fcs-body-right">
+              <div className="fcs-points">
+                <div className="fcs-point">
+                  <span className="fcs-point-num">01</span>
+                  <div>
+                    <strong>The Challenge</strong>
+                    <p>The old direction did not feel engaging enough for parents or kids. Products were not easy to browse and the mobile experience needed to feel clearer.</p>
+                  </div>
+                </div>
+                <div className="fcs-point">
+                  <span className="fcs-point-num">02</span>
+                  <div>
+                    <strong>My Approach</strong>
+                    <p>I created a clean homepage structure with a strong hero section, soft visuals, clear product categories and simple trust sections to help parents understand the brand quickly.</p>
+                  </div>
+                </div>
+              </div>
+              </div>
+              <Link href="/case-studies" className="btn btn-primary fcs-cta">View Full Case Study</Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 5. BEFORE / AFTER ── */}
+        <section className="before-after">
+          <div className="container">
+            <div className="ba-header">
+              <span className="pill-tag">TRANSFORMATION</span>
+              <h2>From Ordinary to Professional</h2>
+              <p>Many businesses already have a website, but it does not always create the right first impression. I improve layout, trust, clarity and visual consistency so the business looks stronger online.</p>
+            </div>
+            <div className="ba-grid">
+              <div className="ba-card ba-before">
+                <span className="ba-label">BEFORE</span>
+                <div className="ba-card-media">
+                  <img src="/assets/before.png" alt="Outdated website mockup with weak hierarchy" />
+                </div>
+                <div className="ba-card-content">
+                  <div className="ba-item ba-item-neg">Weak visual hierarchy and unclear message</div>
+                  <div className="ba-item ba-item-neg">No trust signals or social proof</div>
+                  <div className="ba-item ba-item-neg">Poor mobile experience and layout</div>
+                </div>
+              </div>
+              <div className="ba-arrow" aria-hidden="true">
+                <span className="ba-arrow-h">→</span>
+                <span className="ba-arrow-v">↓</span>
+              </div>
+              <div className="ba-card ba-after">
+                <span className="ba-label ba-label-after">AFTER</span>
+                <div className="ba-card-media">
+                  <img src="/assets/after.png" alt="Polished modern website mockup with clear hierarchy" />
+                </div>
+                <div className="ba-card-content">
+                  <div className="ba-item ba-item-pos">Clearer first impression and strong headline</div>
+                  <div className="ba-item ba-item-pos">Stronger trust structure and service clarity</div>
+                  <div className="ba-item ba-item-pos">More professional mobile experience</div>
+                </div>
+              </div>
+            </div>
+            <div className="ba-cta-row">
+              <a href="#contact" className="btn btn-primary">Start Your Transformation</a>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 6. SERVICES ── */}
+        <section className="services" id="services">
+          <div className="container">
+            <div className="services-head">
+              <span className="pill-tag">SERVICES</span>
+              <h2>Complete design support for businesses that need a professional brand presence</h2>
+              <p className="services-sub">Clean, strategic design across every touchpoint — from logo and identity to packaging, presentations and social media.</p>
+            </div>
+
+            <div className="hp-services-grid">
               {[
-                { title: "Brand & Identity Design", desc: "Custom brand identities ensuring your business stands out.", img: "/assets/brand_identity.png", pill: "sp-orange", href: "/services/brand-identity-design" },
-                { title: "Custom Web Development", desc: "Bespoke website solutions that drive high conversion rates.", img: "/assets/custom_web_dev_2.png", pill: "sp-teal", href: "/services/custom-web-development" },
-                { title: "eCommerce & CMS Sites", desc: "Shopify, Wix, and Squarespace sites that accelerate sales.", img: "/assets/ecommerce.jpg", pill: "sp-blue", href: "/services/ecommerce-cms-sites" }
-              ].map((service, i) => (
-                <Link key={i} href={service.href} className="service-card">
-                  <img src={service.img} alt={service.title} className="service-bg" />
-                  <div className="service-overlay"></div>
-                  <div className="service-content">
-                    <div className="service-header">
-                        <h3 className={`service-pill ${service.pill}`}>{service.title}</h3>
-                        <div className="plus-icon">+</div>
-                    </div>
-                    <p className="service-desc">{service.desc}</p>
-                  </div>
+                {
+                  title: "Logo Design",
+                  desc: "Distinctive logo concepts designed to give your business a clear, memorable and professional visual foundation.",
+                  href: "/services",
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="9" />
+                      <circle cx="12" cy="12" r="3.5" />
+                      <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+                    </svg>
+                  ),
+                },
+                {
+                  title: "Brand Identity",
+                  desc: "Complete visual identity systems including logo usage, colour palette, typography and brand consistency guidelines.",
+                  href: "/services/brand-identity-design",
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M12 3l8 3v6c0 5-3.5 8.2-8 9-4.5-.8-8-4-8-9V6l8-3z" />
+                      <path d="M9 12l2 2 4-4" />
+                    </svg>
+                  ),
+                },
+                {
+                  title: "Packaging Design",
+                  desc: "Thoughtful packaging concepts for labels, pouches, boxes and product presentation that feel polished and market-ready.",
+                  href: "/services",
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5v-9z" />
+                      <path d="M3.5 7.5L12 12l8.5-4.5" />
+                      <path d="M12 12v9" />
+                      <path d="M7.75 5.25L16.5 9.75" />
+                    </svg>
+                  ),
+                },
+                {
+                  title: "Presentation Design",
+                  desc: "Clean and professional presentation design for pitch decks, company profiles, proposals and branded communication.",
+                  href: "/services",
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="3" y="4" width="18" height="12" rx="2" />
+                      <path d="M8 20h8M12 16v4" />
+                      <path d="M7 11l3-3 2 2 4-4" />
+                    </svg>
+                  ),
+                },
+                {
+                  title: "Social Media Design",
+                  desc: "Branded social media visuals designed to keep your business consistent across posts, stories, promotions and campaigns.",
+                  href: "/services",
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+                      <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+                      <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+                      <circle cx="17" cy="17" r="3.2" />
+                    </svg>
+                  ),
+                },
+              ].map((s, i) => (
+                <Link key={i} href={s.href} className="hp-service-card">
+                  <span className="hp-service-accent" aria-hidden="true" />
+                  <span className="hp-service-icon">{s.icon}</span>
+                  <h3>{s.title}</h3>
+                  <p>{s.desc}</p>
+                  <span className="hp-service-link">
+                    <span className="hp-service-link-text">Learn more</span>
+                    <span className="hp-service-arrow" aria-hidden="true">→</span>
+                  </span>
                 </Link>
+              ))}
+
+              <Link href="/services" className="hp-service-card hp-service-cta">
+                <span className="hp-service-cta-bg" aria-hidden="true" />
+                <div className="hp-service-cta-inner">
+                  <span className="hp-service-cta-label">FULL SUITE</span>
+                  <h3>Need complete design support for your business?</h3>
+                  <p>From logo to brand identity, packaging, presentations and social media, I help businesses build a clear and professional visual presence.</p>
+                  <span className="btn btn-primary hp-service-cta-btn">
+                    Learn More <span aria-hidden="true">↗</span>
+                  </span>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 7. AGENCY SUPPORT ── */}
+        <section className="agency-support" id="agency-support">
+          <div className="container">
+            <div className="as-grid">
+              <div className="as-content">
+                <span className="pill-tag">AGENCY SUPPORT</span>
+                <h2>Extra Design Capacity for Busy Agencies</h2>
+                <p>I support small agencies with white-label brand identity, website design, landing pages, packaging and client design assets when their internal team is busy or needs extra creative capacity.</p>
+                <a href="#contact" className="btn btn-primary as-cta">Discuss Agency Support</a>
+              </div>
+              <div className="as-lists">
+                <div className="as-list-block">
+                  <h4>Who I help</h4>
+                  <ul className="as-list">
+                    {['Marketing agencies','SEO agencies','Web design agencies','Branding studios','Social media agencies','Print and signage businesses'].map((item, i) => (
+                      <li key={i}><span className="as-check">✓</span>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="as-list-block">
+                  <h4>What I support with</h4>
+                  <ul className="as-list">
+                    {['Homepage concepts','Website UI layouts','Brand identity systems','Packaging design','Presentation decks','Client-ready visual assets'].map((item, i) => (
+                      <li key={i}><span className="as-check">✓</span>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 8. PROOF & FIVERR REVIEWS ── */}
+        <section className="proof-section" id="testimonials">
+          <div className="container">
+            <span className="pill-tag">PROOF</span>
+            <h2>Trusted by Clients Across Branding, Packaging and Web Design</h2>
+            <div className="proof-stats-grid">
+              {[
+                { num: "1,700+", label: "Fiverr Reviews" },
+                { num: "8+",     label: "Years Design Experience" },
+                { num: "1,000+", label: "Projects Completed" },
+                { num: "★★★★★",  label: "5-Star Rated on Fiverr" },
+              ].map((s, i) => (
+                <div key={i} className="proof-stat-card">
+                  <span className="psc-num">{s.num}</span>
+                  <span className="psc-label">{s.label}</span>
+                </div>
               ))}
             </div>
           </div>
-        </section>
 
-        {/* --- Approach --- */}
-        <section className="approach">
           <div className="container">
-            <div className="approach-grid">
-              <div className="approach-content">
-                <span className="pill-tag">OUR PROCESS</span>
-                <h2>A Streamlined Workflow for Lasting Results</h2>
-                <div className="approach-buttons">
-                  <Link href="/contact" className="btn btn-primary">Get Started</Link>
-                  <Link href="/case-studies" className="btn btn-outline">Our Work</Link>
+            {fiverrReviews.length === 0 ? (
+              <div className="fr-empty">
+                <strong>Reviews carousel ready.</strong>
+                <span>Paste verified 5-star reviews into the <code>fiverrReviews</code> array in <code>app/page.tsx</code> to populate this section.</span>
+              </div>
+            ) : (
+              <div className="fr-marquee-wrap" aria-label="Client reviews">
+                <div className="fr-marquee fr-marquee-row-1">
+                  <div className="fr-marquee-track">
+                    {[...fiverrReviews, ...fiverrReviews].map((r, i) => (
+                      <article key={i} className="fr-card" aria-hidden={i >= fiverrReviews.length}>
+                        <span className="fr-stars" aria-label="5 out of 5 stars">★★★★★</span>
+                        <p className="fr-text">&ldquo;{r.text}&rdquo;</p>
+                        <footer className="fr-card-foot">
+                          <span className="fr-user">{r.username}</span>
+                          <span className="fr-meta">
+                            <span className="fr-country">{r.country}</span>
+                            {r.service && (
+                              <>
+                                <span className="fr-dot" aria-hidden="true">·</span>
+                                <span className="fr-service">{r.service}</span>
+                              </>
+                            )}
+                          </span>
+                        </footer>
+                      </article>
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="process-steps">
-                {[
-                  { num: "1", title: "Discovery & Strategy", desc: "We understand your brand and create a clear digital plan tailored to your goals." },
-                  { num: "2", title: "Design & Prototyping", desc: "We build a modern visual system before development begins." },
-                  { num: "3", title: "Web Development", desc: "Clean, responsive builds aligned with your brand and conversion goals." },
-                  { num: "4", title: "Launch & Optimization", desc: "We support launch, analytics, and performance refinement." }
-                ].map((step, i) => (
-                  <div key={i} className="process-step">
-                    <div className="step-number">{step.num}</div>
-                    <div className="step-info">
+            )}
+
+            <div className="proof-fiverr-badge">
+              <span>1,700+ reviews on</span>
+              <a href="https://www.fiverr.com/block_design" target="_blank" rel="noopener noreferrer" className="proof-fiverr-link">fiverr.com/block_design ↗</a>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 9. PROCESS ── */}
+        <section className="process-section">
+          <div className="container">
+            <div className="proc-head">
+              <span className="pill-tag">PROCESS</span>
+              <h2>A Clear Process From First Idea to Final Delivery</h2>
+            </div>
+
+            <div
+              ref={processRef}
+              className={`proc-flow ${processInView ? "is-visible" : ""}`}
+            >
+              {[
+                { num: "1", title: "Discovery",          desc: "I review your business, goals, audience, competitors and current brand or website direction.",                  variant: "light"   },
+                { num: "2", title: "Creative Direction", desc: "I define the visual direction, structure, layout style and brand approach before moving into full design.",       variant: "cream"   },
+                { num: "3", title: "Design & Refinement",desc: "I create the brand, packaging or website design with a focus on clarity, consistency and professional presentation.", variant: "peach"   },
+                { num: "4", title: "Final Delivery",     desc: "You receive clean final files, source files where included, and ready-to-use assets for print, digital or web.",   variant: "dark"    },
+              ].map((step, i) => (
+                <React.Fragment key={i}>
+                  <article
+                    className={`proc-capsule proc-capsule-${step.variant}`}
+                    style={{ ["--proc-delay" as string]: `${i * 140}ms` }}
+                  >
+                    <div className="proc-head-circle">
+                      <span className="proc-num">{step.num}</span>
+                    </div>
+                    <div className="proc-body">
                       <h3>{step.title}</h3>
                       <p>{step.desc}</p>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* --- Video --- */}
-        <section className="full-video-section">
-          <div className="video-wrapper">
-            <video src="https://framerusercontent.com/assets/dcvnnvkeNKmgN1qxCAM2MNUiZM.mp4" autoPlay muted loop playsInline className="native-bg-video" />
-            <div className="video-overlay"></div>
-          </div>
-        </section>
-
-        {/* --- Impact --- */}
-        <section className="stats">
-          <div className="container">
-            <span className="pill-tag">OUR IMPACT</span>
-            <h2>Transforming Digital Brands with Expertise</h2>
-            <div className="stats-grid">
-              <div className="stat-card"><h3>11+ Years</h3><p>Digital Excellence</p></div>
-              <div className="stat-card"><h3>800+ Brands</h3><p>Trusted Partnerships</p></div>
-              <div className="stat-card"><h3>3000+</h3><p>Projects Completed</p></div>
-            </div>
-          </div>
-        </section>
-
-        {/* --- Industries --- */}
-        <section className="industries" ref={industriesRef}>
-          <div className="container">
-            <span className="pill-tag">BRANDS WE ELEVATE</span>
-            <h2>Industry-Specific Web Design to Drive Your Success</h2>
-            <div className="pill-cloud">
-               {[
-                { name: "Fashion Brands", cls: "cp-teal" },
-                { name: "Tech Startups", cls: "cp-yellow" },
-                { name: "D2C E-commerce", cls: "cp-blue" },
-                { name: "B2B Agencies", cls: "cp-darkblue" },
-                { name: "SaaS Platforms", cls: "cp-peach" },
-                { name: "Local Retail", cls: "cp-pink" },
-                { name: "Enterprise", cls: "cp-darkblue" },
-                { name: "Creative Studios", cls: "cp-orange" }
-              ].map((pill, i) => (
-                <div key={i} className={`cloud-pill ${pill.cls}`}>{pill.name}</div>
+                  </article>
+                  {i < 3 && (
+                    <span
+                      className="proc-arrow"
+                      aria-hidden="true"
+                      style={{ ["--proc-delay" as string]: `${i * 140 + 90}ms` }}
+                    >
+                      <svg viewBox="0 0 32 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 6h28M22 1l6 5-6 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                  )}
+                </React.Fragment>
               ))}
             </div>
+
+            <p className="process-note">Website work can include desktop and mobile layouts, homepage structure, service sections, contact flow and platform-ready design direction.</p>
           </div>
         </section>
 
-        {/* --- Case Studies --- */}
-        <section className="case-studies">
+        {/* ── 10. CONTACT ── */}
+        <section className="hp-contact" id="contact">
           <div className="container">
-            <div className="cs-header">
-              <div><span className="pill-tag">CASE STUDIES</span><h2>Client Success Through Our Web Design</h2></div>
-              <Link href="/case-studies" className="btn btn-outline" style={{ minWidth: '140px', justifyContent: 'center', height: 'fit-content', marginTop: '10px' }}>Explore All</Link>
-            </div>
-            <div className="cs-grid">
-              <div className="cs-hero-card">
-                <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1000&q=60" alt="Tech startup workshop" className="cs-img-large" />
-                <span className="pill-tag">TECH STARTUP</span>
-                <h3>Driving Conversions: Transforming a Tech Startup&apos;s Identity</h3>
-              </div>
-              <div className="cs-sm-card">
-                <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=600&q=60" alt="Ecommerce operations team" className="cs-img-small" />
-                <span className="pill-tag">ECOMMERCE</span>
-                <h3>Scaling E-commerce: A Fashion Brand&apos;s Growth</h3>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* --- Testimonials --- */}
-        <section className="testimonials" id="testimonials">
-          <div className="container" style={{ textAlign: 'center', marginBottom: '60px' }}>
-            <span className="pill-tag">TESTIMONIALS</span>
-            <h2>Trusted by Businesses Worldwide</h2>
-          </div>
-          <div className="testi-track-new">
-            {[...testimonials, ...testimonials].map((testimonial, index) => (
-              <article className="t-card" key={`${testimonial.name}-${index}`}>
-                <img src={testimonial.img} alt={`${testimonial.name}, ${testimonial.role}`} className="t-img" />
-                <div className="t-content">
-                  <p className="t-quote">&quot;{testimonial.quote}&quot;</p>
-                  <p className="t-author">- {testimonial.name}, {testimonial.role}</p>
+            <div className="hp-contact-grid">
+              <div className="hp-contact-info">
+                <span className="pill-tag">GET IN TOUCH</span>
+                <h2>Have a Project in Mind?</h2>
+                <p>Tell me what you need help with and I&apos;ll reply with the best next step for your brand, packaging or website project.</p>
+                <div className="hp-contact-details">
+                  <a href="mailto:ashar@owlisticstudio.com" className="hp-contact-detail">
+                    <span className="hcd-icon">✉</span>
+                    ashar@owlisticstudio.com
+                  </a>
+                  <a href="https://www.fiverr.com/block_design" target="_blank" rel="noopener noreferrer" className="hp-contact-detail">
+                    <span className="hcd-icon">★</span>
+                    Fiverr: fiverr.com/block_design
+                  </a>
+                  <a href="https://wa.me/923333323248" target="_blank" rel="noopener noreferrer" className="hp-contact-detail">
+                    <span className="hcd-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true">
+                        <path d="M19.11 4.91A9.93 9.93 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.74.46 3.44 1.32 4.94L2 22l5.27-1.38a9.92 9.92 0 0 0 4.77 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.85-7.02ZM12.05 20.2h-.01a8.27 8.27 0 0 1-4.21-1.15l-.3-.18-3.13.82.84-3.05-.2-.31a8.25 8.25 0 0 1-1.26-4.42c0-4.55 3.7-8.25 8.27-8.25 2.21 0 4.28.86 5.84 2.42a8.2 8.2 0 0 1 2.42 5.84c0 4.55-3.71 8.28-8.26 8.28Zm4.53-6.18c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.15.16-.29.18-.54.06-.25-.12-1.05-.39-2-1.24-.74-.66-1.24-1.47-1.39-1.72-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.12-.15.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43l-.48-.01a.92.92 0 0 0-.67.31c-.23.25-.88.86-.88 2.09 0 1.23.9 2.43 1.03 2.59.12.16 1.78 2.72 4.31 3.81.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.1-.22-.16-.47-.28Z"/>
+                      </svg>
+                    </span>
+                    WhatsApp: +92 333 3323248
+                  </a>
+                  <p className="hcd-note">Usually replies within 24 hours</p>
                 </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* --- CTA --- */}
-        <section className="cta-final">
-          <div className="container" style={{ textAlign: 'center' }}>
-            <span className="pill-tag" style={{ background: 'var(--white)', color: 'var(--orange)' }}>READY TO GROW?</span>
-            <h2 className="cta-title">Launch Your Brand&apos;s Next Digital Era</h2>
-            <div className="cta-buttons">
-              <Link href="/contact" className="btn btn-dark">Get Started</Link>
-              <Link href="/case-studies" className="btn btn-white" style={{ color: 'var(--orange)' }}>Our Work</Link>
+              </div>
+              <div className="hp-contact-form-wrap">
+                {submitted ? (
+                  <div className="hp-form-success">
+                    <span>✓</span>
+                    <h3>Message received!</h3>
+                    <p>Thanks — your message has been sent to my inbox. I&apos;ll get back to you within 24 hours.</p>
+                  </div>
+                ) : (
+                  <form className="hp-contact-form" onSubmit={handleSubmit}>
+                    <div className="hp-form-row">
+                      <div className="hp-form-group">
+                        <label htmlFor="cf-name">Full Name *</label>
+                        <input id="cf-name" type="text" placeholder="Your name" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+                      </div>
+                      <div className="hp-form-group">
+                        <label htmlFor="cf-email">Email Address *</label>
+                        <input id="cf-email" type="email" placeholder="your@email.com" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                      </div>
+                    </div>
+                    <div className="hp-form-row">
+                      <div className="hp-form-group">
+                        <label htmlFor="cf-company">Company Name</label>
+                        <input id="cf-company" type="text" placeholder="Your company" value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} />
+                      </div>
+                      <div className="hp-form-group">
+                        <label htmlFor="cf-type">Project Type *</label>
+                        <select id="cf-type" required value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}>
+                          <option value="">Select a service</option>
+                          <option value="Brand Identity">Brand Identity</option>
+                          <option value="Packaging Design">Packaging Design</option>
+                          <option value="Website Design">Website Design</option>
+                          <option value="Presentation Design">Presentation Design</option>
+                          <option value="Agency Support">Agency Support</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="hp-form-group">
+                      <label htmlFor="cf-message">Message *</label>
+                      <textarea id="cf-message" placeholder="Tell me about your project..." required rows={5} value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} />
+                    </div>
+                    {sendError && (
+                      <p className="hp-form-error" role="alert">{sendError}</p>
+                    )}
+                    <button
+                      type="submit"
+                      className="btn btn-primary hp-form-submit"
+                      disabled={sending}
+                    >
+                      {sending ? "Sending..." : "Send Message"}
+                    </button>
+                  </form>
+                )}
+              </div>
             </div>
           </div>
         </section>
+
       </main>
       <Footer />
     </>

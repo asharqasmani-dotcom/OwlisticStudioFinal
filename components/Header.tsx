@@ -1,14 +1,21 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const pathname = usePathname();
+
+  const closeMenu = () => {
+    setIsOpen(false);
+    setServicesOpen(false);
+  };
 
   useEffect(() => {
     const flipButtons = document.querySelectorAll('.btn');
-
     flipButtons.forEach((button) => {
       const label = button.textContent?.trim();
       if (label) {
@@ -43,10 +50,7 @@ const Header = () => {
     };
 
     media.addEventListener('change', handleSystemTheme);
-
-    return () => {
-      media.removeEventListener('change', handleSystemTheme);
-    };
+    return () => media.removeEventListener('change', handleSystemTheme);
   }, []);
 
   const toggleTheme = () => {
@@ -57,28 +61,46 @@ const Header = () => {
     setTheme(nextTheme);
   };
 
+  const isActive = (href: string) =>
+    href === '/' ? pathname === '/' : pathname.startsWith(href);
+
   return (
     <header>
       <div className={`nav-inner ${isOpen ? 'nav-open' : ''}`}>
-        <Link href="/" className="logo">
-          <img src="/assets/owlistic_full_logo.png" alt="Owalistic Sol" style={{ height: '54px', width: 'auto', maxWidth: '235px', objectFit: 'contain' }} />
+        <Link href="/" className="logo" onClick={closeMenu}>
+          <img
+            src={theme === 'dark'
+              ? "/assets/download (15).gif"
+              : "/assets/download (14).gif"}
+            alt="Owalistic Sol"
+            className="logo-img"
+          />
         </Link>
+
         <ul className="nav-links">
-          <li><Link href="/" className="nav-item" onClick={() => setIsOpen(false)}>Home</Link></li>
+          <li>
+            <Link href="/" className={`nav-item${isActive('/') ? ' nav-link-active' : ''}`} onClick={closeMenu}>Home</Link>
+          </li>
+          <li>
+            <Link href="/case-studies" className={`nav-item${isActive('/case-studies') ? ' nav-link-active' : ''}`} onClick={closeMenu}>Work</Link>
+          </li>
+
+          {/* Services — desktop mega menu + mobile accordion */}
           <li className="nav-item has-mega">
-            <Link href="/services" onClick={() => setIsOpen(false)}>Services</Link>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+            {/* Desktop trigger */}
+            <Link href="/services" className={`nav-services-desktop${isActive('/services') ? ' nav-link-active' : ''}`} onClick={closeMenu}>Services</Link>
+            <svg className="nav-services-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
             <div className="mega-menu">
               <div className="mega-container">
-                <Link href="/services/brand-identity-design" className="mega-card" onClick={() => setIsOpen(false)}>
+                <Link href="/services/brand-identity-design" className="mega-card" onClick={closeMenu}>
                   <div className="mega-bg" style={{ backgroundImage: "url('/assets/brand_identity.png')" }}></div>
                   <div className="mega-overlay"></div>
                   <div className="mega-content">
-                    <h4>Brand & Identity Design</h4>
+                    <h4>Brand &amp; Identity Design</h4>
                     <span className="mega-arrow">→</span>
                   </div>
                 </Link>
-                <Link href="/services/custom-web-development" className="mega-card" onClick={() => setIsOpen(false)}>
+                <Link href="/services/custom-web-development" className="mega-card" onClick={closeMenu}>
                   <div className="mega-bg" style={{ backgroundImage: "url('/assets/custom_web_dev_2.png')" }}></div>
                   <div className="mega-overlay"></div>
                   <div className="mega-content">
@@ -86,20 +108,57 @@ const Header = () => {
                     <span className="mega-arrow">→</span>
                   </div>
                 </Link>
-                <Link href="/services/ecommerce-cms-sites" className="mega-card" onClick={() => setIsOpen(false)}>
+                <Link href="/services/ecommerce-cms-sites" className="mega-card" onClick={closeMenu}>
                   <div className="mega-bg" style={{ backgroundImage: "url('/assets/ecommerce.jpg')" }}></div>
                   <div className="mega-overlay"></div>
                   <div className="mega-content">
-                    <h4>eCommerce & CMS Sites</h4>
+                    <h4>eCommerce &amp; CMS Sites</h4>
                     <span className="mega-arrow">→</span>
                   </div>
                 </Link>
               </div>
             </div>
+
+            {/* Mobile accordion */}
+            <div className="mobile-services-section">
+              <button
+                className="mobile-services-btn"
+                onClick={() => setServicesOpen(!servicesOpen)}
+                aria-expanded={servicesOpen}
+              >
+                Services
+                <svg
+                  width="12" height="12" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="2"
+                  style={{ transform: servicesOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.22s ease' }}
+                >
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+              <ul className={`mobile-services-links${servicesOpen ? ' open' : ''}`}>
+                <li><Link href="/services/brand-identity-design" onClick={closeMenu}>Brand &amp; Identity Design</Link></li>
+                <li><Link href="/services/custom-web-development" onClick={closeMenu}>Custom Web Development</Link></li>
+                <li><Link href="/services/ecommerce-cms-sites" onClick={closeMenu}>eCommerce &amp; CMS Sites</Link></li>
+              </ul>
+            </div>
           </li>
-          <li><Link href="/about" className="nav-item" onClick={() => setIsOpen(false)}>About Us</Link></li>
-          <li><Link href="/case-studies" className="nav-item" onClick={() => setIsOpen(false)}>Case Studies</Link></li>
+
+          <li>
+            <Link href="/agency-support" className={`nav-item${isActive('/agency-support') ? ' nav-link-active' : ''}`} onClick={closeMenu}>Agency Support</Link>
+          </li>
+          <li>
+            <Link href="/about" className={`nav-item${isActive('/about') ? ' nav-link-active' : ''}`} onClick={closeMenu}>About</Link>
+          </li>
+          <li>
+            <Link href="/contact" className={`nav-item${isActive('/contact') ? ' nav-link-active' : ''}`} onClick={closeMenu}>Contact</Link>
+          </li>
+
+          {/* CTA inside mobile menu */}
+          <li className="mobile-cta-item">
+            <Link href="/contact" className="btn btn-primary nav-cta-mobile" onClick={closeMenu}>Start a Project</Link>
+          </li>
         </ul>
+
         <div className="nav-actions">
           <button
             type="button"
@@ -123,9 +182,10 @@ const Header = () => {
               </span>
             </span>
           </button>
-          <Link href="/contact" className="btn btn-primary nav-cta" onClick={() => setIsOpen(false)}>Let&apos;s Talk</Link>
+          <Link href="/contact" className="btn btn-primary nav-cta" onClick={closeMenu}>Start a Project</Link>
         </div>
-        <button 
+
+        <button
           className="menu-toggle"
           onClick={() => setIsOpen(!isOpen)}
           aria-label={isOpen ? "Close menu" : "Open menu"}

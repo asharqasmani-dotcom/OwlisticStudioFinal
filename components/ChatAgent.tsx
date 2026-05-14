@@ -131,7 +131,7 @@ export default function ChatAgent() {
   const quickActions = useMemo(
     () => [
       {
-        href: "https://wa.me/923451180314",
+        href: "https://wa.me/923333323248",
         label: "Reach out to us on WhatsApp",
         className: "ow-agent-action ow-agent-action-primary",
       },
