@@ -4,6 +4,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Footer from "@/components/Footer";
 
+const smoothEase: [number, number, number, number] = [0.2, 0.7, 0.2, 1];
+
 const reveal = {
   hidden: { opacity: 0, y: 34 },
   show: { opacity: 1, y: 0 },
@@ -151,7 +153,7 @@ export default function AboutExperience() {
             >
               <span className="about-luxe-timeline-line" aria-hidden="true" />
               {journey.map(([year, copy]) => (
-                <motion.article key={year} variants={timelineItem} transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}>
+                <motion.article key={year} variants={timelineItem} transition={{ duration: 0.7, ease: smoothEase }}>
                   <strong>{year}</strong>
                   <p>{copy}</p>
                   <span aria-hidden="true" />
@@ -207,7 +209,7 @@ export default function AboutExperience() {
                   key={title}
                   className="about-luxe-service-card"
                   variants={timelineItem}
-                  transition={{ duration: 0.55, ease: [0.2, 0.7, 0.2, 1] }}
+                  transition={{ duration: 0.55, ease: smoothEase }}
                   whileHover={{ y: -6 }}
                 >
                   <span className="about-luxe-icon" aria-hidden="true">
@@ -280,7 +282,7 @@ export default function AboutExperience() {
                       opacity: 1,
                       y: 0,
                       filter: "blur(0px)",
-                      transition: { duration: 0.6, ease: [0.2, 0.7, 0.2, 1] },
+                      transition: { duration: 0.6, ease: smoothEase },
                     },
                   }}
                   whileHover={{ y: -6, transition: { duration: 0.25 } }}

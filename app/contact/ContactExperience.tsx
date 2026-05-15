@@ -7,9 +7,11 @@ import Footer from "@/components/Footer";
 import ContactFormPanel from "@/components/ContactFormPanel";
 import { siteConfig } from "@/lib/site";
 
+const smoothEase: [number, number, number, number] = [0.2, 0.7, 0.2, 1];
+
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: smoothEase } },
 };
 
 const stagger = {
@@ -167,7 +169,7 @@ export default function ContactExperience() {
               className="as-hero-stage ctc-hero-stage"
               initial={{ opacity: 0, scale: 0.97, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1, ease: [0.2, 0.7, 0.2, 1] }}
+              transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
             >
               <ContactHeroVisual />
             </motion.div>
