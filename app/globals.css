@@ -11120,32 +11120,57 @@ html[data-theme="dark"] .ctc-intake-note {
 }
 
 @media (max-width: 768px) {
-  /* Make collapsed strips taller so each image actually shows content,
-     not just a thin crop that can look empty. */
+  /* Collapsed strips are slim, just enough to read the service label;
+     active strip expands dramatically like desktop hover does. */
+  .ha-accordion {
+    gap: 10px !important;
+  }
+
   .ha-accordion > div {
-    height: 110px !important;
+    height: 68px !important;
     border-radius: 14px !important;
+    transition: height 500ms cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 
   .ha-accordion > div[aria-expanded="true"] {
-    height: 240px !important;
+    height: 320px !important;
   }
 
-  /* Ensure each strip image fully fills with proper cover. */
   .ha-accordion > div img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
     object-position: center !important;
   }
+
+  /* Service label always horizontal and readable on collapsed strips. */
+  .ha-accordion span {
+    bottom: auto !important;
+    top: 50% !important;
+    left: 18px !important;
+    transform: translateY(-50%) !important;
+    rotate: 0deg !important;
+    writing-mode: horizontal-tb !important;
+    opacity: 1 !important;
+    font-size: 0.95rem !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  /* On the expanded strip, move label to bottom-left like desktop. */
+  .ha-accordion > div[aria-expanded="true"] span {
+    top: auto !important;
+    bottom: 18px !important;
+    transform: none !important;
+    font-size: 1.05rem !important;
+  }
 }
 
 @media (max-width: 480px) {
   .ha-accordion > div {
-    height: 96px !important;
+    height: 60px !important;
   }
   .ha-accordion > div[aria-expanded="true"] {
-    height: 200px !important;
+    height: 280px !important;
   }
 }
 
