@@ -7,6 +7,9 @@ import { HeroAccordion } from "@/components/ui/interactive-image-accordion";
 import { CircularTestimonials } from "@/components/ui/circular-testimonials";
 import { SelectedWorkSlider } from "@/components/SelectedWorkSlider";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
+import { FaLinkedinIn } from "react-icons/fa";
+import { MdOutlineEmail } from "react-icons/md";
+import { SiFiverr, SiUpwork, SiWhatsapp } from "react-icons/si";
 
 const projects: { name: string; category: string; desc: string; img: string; color: string; link?: string; video?: string; ratio?: string }[] = [
   {
@@ -262,9 +265,7 @@ export default function Home() {
                       className="about-circular-social"
                       aria-label="LinkedIn"
                     >
-                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8h4.56v14H.22V8zm7.4 0h4.37v1.92h.06c.61-1.16 2.1-2.39 4.32-2.39 4.62 0 5.47 3.04 5.47 7v7.47h-4.56v-6.62c0-1.58-.03-3.62-2.2-3.62-2.2 0-2.54 1.72-2.54 3.5v6.74H7.62V8z"/>
-                      </svg>
+                      <FaLinkedinIn aria-hidden="true" />
                       LinkedIn
                     </a>
                     <a
@@ -274,9 +275,7 @@ export default function Home() {
                       className="about-circular-social"
                       aria-label="Fiverr"
                     >
-                      <svg className="about-brand-icon about-brand-icon-fiverr" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M4.3 10.7H2.2v-3h2.1V6.5c0-2.7 1.7-4.4 4.8-4.4h2v3H9.4c-1.1 0-1.5.5-1.5 1.5v1.1h3.2v3H7.9v7.8H4.3v-7.8Zm8.4-3h3.6v10.8h-3.6V7.7Zm7.4 10.8h-3.6V7.7h3.6v10.8Zm-5.6-12.3a2 2 0 1 1 0-4 2 2 0 0 1 0 4Zm3.8 14.1a1.8 1.8 0 1 1 3.6 0 1.8 1.8 0 0 1-3.6 0Z"/>
-                      </svg>
+                      <SiFiverr className="about-brand-icon about-brand-icon-fiverr" aria-hidden="true" />
                       Fiverr
                     </a>
                     <a
@@ -286,9 +285,7 @@ export default function Home() {
                       className="about-circular-social"
                       aria-label="Upwork"
                     >
-                      <svg className="about-brand-icon about-brand-icon-upwork" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M7.2 17.8c-3.5 0-6-2.7-6-6.4V5.8h3.4v5.6c0 1.9 1 3.1 2.6 3.1s2.6-1.2 2.6-3.1V5.8h3.4v5.4c.8-3.6 2.8-5.8 5.5-5.8 2.5 0 4.2 1.9 4.2 4.5 0 2.8-1.8 4.7-4.3 4.7-1.1 0-2.1-.3-3-.9l-.9 4.1h-3.3l1.3-5.8c-.3 3.4-2.5 5.8-5.5 5.8Zm10.9-6.2c1 0 1.5-.8 1.5-1.8 0-.9-.5-1.6-1.4-1.6-1 0-1.8 1-2.3 3 .7.3 1.4.4 2.2.4Z"/>
-                      </svg>
+                      <SiUpwork className="about-brand-icon about-brand-icon-upwork" aria-hidden="true" />
                       Upwork
                     </a>
                     <a
@@ -296,10 +293,7 @@ export default function Home() {
                       className="about-circular-social"
                       aria-label="Email"
                     >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <rect x="2.5" y="4" width="19" height="16" rx="2" />
-                        <path d="M3 6l9 7 9-7" />
-                      </svg>
+                      <MdOutlineEmail aria-hidden="true" />
                       Email
                     </a>
                     <a
@@ -309,9 +303,7 @@ export default function Home() {
                       className="about-circular-social"
                       aria-label="WhatsApp"
                     >
-                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M19.11 4.91A9.93 9.93 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.74.46 3.44 1.32 4.94L2 22l5.27-1.38a9.92 9.92 0 0 0 4.77 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.85-7.02ZM12.05 20.2h-.01a8.27 8.27 0 0 1-4.21-1.15l-.3-.18-3.13.82.84-3.05-.2-.31a8.25 8.25 0 0 1-1.26-4.42c0-4.55 3.7-8.25 8.27-8.25 2.21 0 4.28.86 5.84 2.42a8.2 8.2 0 0 1 2.42 5.84c0 4.55-3.71 8.28-8.26 8.28Zm4.53-6.18c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.15.16-.29.18-.54.06-.25-.12-1.05-.39-2-1.24-.74-.66-1.24-1.47-1.39-1.72-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.12-.15.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43l-.48-.01a.92.92 0 0 0-.67.31c-.23.25-.88.86-.88 2.09 0 1.23.9 2.43 1.03 2.59.12.16 1.78 2.72 4.31 3.81.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.1-.22-.16-.47-.28Z"/>
-                      </svg>
+                      <SiWhatsapp aria-hidden="true" />
                       WhatsApp
                     </a>
                   </div>

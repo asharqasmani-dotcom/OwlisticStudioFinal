@@ -113,7 +113,7 @@ export function HeroAccordion({ customerAvatars }: HeroAccordionProps) {
     <section
       id="hero"
       style={{
-        background: "var(--cream)",
+        background: "var(--hero-bg)",
         paddingTop: 212,
         paddingBottom: 80,
       }}

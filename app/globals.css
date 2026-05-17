@@ -41,6 +41,7 @@
   --border-soft: rgba(38, 33, 33, 0.09);
   --border-strong: rgba(38, 33, 33, 0.16);
   --nav-bg: rgba(250, 235, 220, 0.92);
+  --hero-bg: var(--cream);
   --elev-shadow: 0 24px 60px rgba(38, 33, 33, 0.08);
   --soft-shadow: 0 16px 36px rgba(38, 33, 33, 0.1);
   --card-shadow: 0 18px 40px rgba(38, 33, 33, 0.1);
@@ -61,6 +62,7 @@ html[data-theme="dark"] {
   --border-soft: rgba(244, 238, 232, 0.1);
   --border-strong: rgba(244, 238, 232, 0.18);
   --nav-bg: rgba(21, 25, 29, 0.9);
+  --hero-bg: var(--app-bg);
   --elev-shadow: 0 28px 70px rgba(0, 0, 0, 0.34);
   --soft-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
   --card-shadow: 0 18px 44px rgba(0, 0, 0, 0.3);
@@ -12268,5 +12270,104 @@ html[data-theme="dark"] .ctc-intake-note {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
+  }
+}
+
+/* Dark-mode contrast polish for homepage sections and mobile overlays */
+html[data-theme="dark"] .about-circular,
+html[data-theme="dark"] .selected-work,
+html[data-theme="dark"] .ba-slider-section,
+html[data-theme="dark"] .services {
+  background: var(--app-bg);
+}
+
+html[data-theme="dark"] #hero {
+  background: var(--app-bg) !important;
+}
+
+html[data-theme="dark"] #hero .ha-heading {
+  color: var(--text-primary) !important;
+}
+
+html[data-theme="dark"] #hero .btn-outline {
+  color: var(--text-primary);
+  border-color: rgba(244, 238, 232, 0.24);
+  background: rgba(244, 238, 232, 0.04);
+}
+
+html[data-theme="dark"] #hero .btn-outline:hover {
+  background: rgba(244, 238, 232, 0.1);
+  border-color: rgba(244, 238, 232, 0.42);
+}
+
+html[data-theme="dark"] .featured-cs,
+html[data-theme="dark"] .proof-section,
+html[data-theme="dark"] .process-section,
+html[data-theme="dark"] .hp-contact {
+  background: var(--surface-2);
+}
+
+html[data-theme="dark"] .about-circular-head p,
+html[data-theme="dark"] .sw-header p,
+html[data-theme="dark"] .fcs-lead,
+html[data-theme="dark"] .fcs-point p,
+html[data-theme="dark"] .ba-slider-head p,
+html[data-theme="dark"] .services-sub,
+html[data-theme="dark"] .psc-label,
+html[data-theme="dark"] .process-note,
+html[data-theme="dark"] .hp-contact-info > p {
+  color: rgba(244, 238, 232, 0.82) !important;
+}
+
+html[data-theme="dark"] .about-circular-social,
+html[data-theme="dark"] .sw-card,
+html[data-theme="dark"] .proof-stat-card,
+html[data-theme="dark"] .fr-card,
+html[data-theme="dark"] .hp-contact-form,
+html[data-theme="dark"] .hp-contact-detail {
+  background: #1b2026;
+  border-color: rgba(244, 238, 232, 0.16);
+  color: var(--text-primary);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+}
+
+html[data-theme="dark"] .about-circular-social:hover {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--white);
+}
+
+html[data-theme="dark"] .sw-card p,
+html[data-theme="dark"] .fr-text,
+html[data-theme="dark"] .hp-contact-detail,
+html[data-theme="dark"] .hp-contact-detail svg {
+  color: rgba(244, 238, 232, 0.84);
+}
+
+html[data-theme="dark"] .hp-service-card {
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.26);
+}
+
+html[data-theme="dark"] .hp-service-card:hover {
+  background: #f7eee7;
+  color: #1f252b;
+}
+
+html[data-theme="dark"] .hp-service-card:hover p {
+  color: rgba(31, 37, 43, 0.78);
+}
+
+@media (max-width: 768px) {
+  html[data-theme="dark"] .about-circular-wrap .testimonial-copy-mobile {
+    background: linear-gradient(180deg, rgba(7, 10, 12, 0) 0%, rgba(7, 10, 12, 0.78) 36%, rgba(7, 10, 12, 0.96) 100%);
+  }
+
+  html[data-theme="dark"] .about-circular-wrap .testimonial-copy-mobile .name {
+    color: var(--orange) !important;
+  }
+
+  html[data-theme="dark"] .about-circular-wrap .testimonial-copy-mobile .designation,
+  html[data-theme="dark"] .about-circular-wrap .testimonial-copy-mobile .quote {
+    color: rgba(255, 255, 255, 0.94) !important;
   }
 }
