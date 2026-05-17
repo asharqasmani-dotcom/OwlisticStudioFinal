@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface Testimonial {
   quote: string;
+  mobileQuote?: string;
   name: string;
   designation: string;
   src: string;
@@ -170,6 +171,7 @@ export const CircularTestimonials = ({
   return (
     <div className="testimonial-container">
       <div className="testimonial-grid">
+        {intro && <div className="testimonial-intro-mobile">{intro}</div>}
         <div className="image-container" ref={imageContainerRef}>
           {testimonials.map((testimonial, index) => (
             <img
@@ -181,11 +183,66 @@ export const CircularTestimonials = ({
               style={getImageStyle(index)}
             />
           ))}
-        </div>
-        <div className="testimonial-content">
-          {intro}
           <AnimatePresence mode="wait">
             <motion.div
+              className="testimonial-copy testimonial-copy-mobile"
+              key={`mobile-${activeIndex}`}
+              variants={quoteVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <div className="testimonial-person">
+                <h3
+                  className="name"
+                  style={{ color: colorName, fontSize: fontSizeName }}
+                >
+                  {activeTestimonial.name}
+                </h3>
+                <p
+                  className="designation"
+                  style={{ color: colorDesignation, fontSize: fontSizeDesignation }}
+                >
+                  {activeTestimonial.designation}
+                </p>
+              </div>
+              <motion.p
+                className="quote"
+                style={{ color: colorTestimony, fontSize: fontSizeQuote }}
+              >
+                {(activeTestimonial.mobileQuote ?? activeTestimonial.quote).split(" ").map((word, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{
+                      filter: "blur(10px)",
+                      opacity: 0,
+                      y: 5,
+                    }}
+                    animate={{
+                      filter: "blur(0px)",
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.22,
+                      ease: "easeInOut",
+                      delay: 0.025 * i,
+                    }}
+                    style={{ display: "inline-block" }}
+                  >
+                    {word}&nbsp;
+                  </motion.span>
+                ))}
+              </motion.p>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+        <div className="testimonial-content">
+          {intro && <div className="testimonial-intro-desktop">{intro}</div>}
+          <AnimatePresence mode="wait">
+            <motion.div
+              className="testimonial-copy testimonial-copy-panel"
               key={activeIndex}
               variants={quoteVariants}
               initial="initial"
@@ -193,18 +250,20 @@ export const CircularTestimonials = ({
               exit="exit"
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              <h3
-                className="name"
-                style={{ color: colorName, fontSize: fontSizeName }}
-              >
-                {activeTestimonial.name}
-              </h3>
-              <p
-                className="designation"
-                style={{ color: colorDesignation, fontSize: fontSizeDesignation }}
-              >
-                {activeTestimonial.designation}
-              </p>
+              <div className="testimonial-person">
+                <h3
+                  className="name"
+                  style={{ color: colorName, fontSize: fontSizeName }}
+                >
+                  {activeTestimonial.name}
+                </h3>
+                <p
+                  className="designation"
+                  style={{ color: colorDesignation, fontSize: fontSizeDesignation }}
+                >
+                  {activeTestimonial.designation}
+                </p>
+              </div>
               <motion.p
                 className="quote"
                 style={{ color: colorTestimony, fontSize: fontSizeQuote }}
@@ -292,6 +351,15 @@ export const CircularTestimonials = ({
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+        }
+        .testimonial-intro-mobile {
+          display: none;
+        }
+        .testimonial-intro-desktop {
+          display: contents;
+        }
+        .testimonial-copy-mobile {
+          display: none;
         }
         .name {
           font-weight: 500;

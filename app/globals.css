@@ -11661,7 +11661,15 @@ html[data-theme="dark"] .ctc-intake-note {
   .proof-section,
   .process-section,
   .hp-contact {
-    padding: 64px 0 !important;
+    padding: 44px 0 !important;
+  }
+
+  .about-circular {
+    padding-bottom: 36px !important;
+  }
+
+  .about-circular + .selected-work {
+    padding-top: 36px !important;
   }
 
   /* Unified h2 size across all homepage sections */
@@ -11934,6 +11942,22 @@ html[data-theme="dark"] .ctc-intake-note {
     max-width: 100% !important;
   }
 
+  .about-circular-wrap .testimonial-grid {
+    display: flex !important;
+    flex-direction: column;
+    gap: 18px !important;
+    position: relative;
+  }
+
+  .about-circular-wrap .testimonial-intro-mobile {
+    display: block !important;
+    order: 0;
+  }
+
+  .about-circular-wrap .testimonial-intro-desktop {
+    display: none !important;
+  }
+
   .about-circular-head h2,
   .about-typing-title,
   .about-typing-accent {
@@ -11949,6 +11973,7 @@ html[data-theme="dark"] .ctc-intake-note {
   }
 
   .about-circular-wrap .image-container {
+    order: 1;
     height: clamp(260px, 78vw, 330px) !important;
     overflow: hidden;
     border-radius: 18px;
@@ -11968,19 +11993,101 @@ html[data-theme="dark"] .ctc-intake-note {
   }
 
   .about-circular-wrap .testimonial-content {
-    position: relative;
-    padding-top: 64px;
+    order: 2;
+    position: static;
+    padding-top: 0;
+    gap: 12px !important;
   }
 
   .about-circular-wrap .arrow-buttons {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: calc(clamp(260px, 78vw, 330px) + 16px);
+    right: 12px;
     width: auto !important;
     max-width: none !important;
     justify-content: flex-end;
     gap: 10px !important;
     padding-top: 0 !important;
+  }
+
+  .about-circular-wrap .testimonial-copy-panel {
+    display: none !important;
+  }
+
+  .about-circular-wrap .testimonial-copy-mobile {
+    display: grid !important;
+    grid-template-columns: minmax(118px, 0.45fr) minmax(0, 1fr);
+    align-items: end;
+    gap: 12px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    margin: 0;
+    padding: 42px 14px 13px;
+    background: linear-gradient(180deg, rgba(15, 15, 15, 0) 0%, rgba(15, 15, 15, 0.68) 38%, rgba(15, 15, 15, 0.9) 100%);
+    border-radius: 0 0 18px 18px;
+  }
+
+  .about-circular-wrap .testimonial-person {
+    min-width: 0;
+  }
+
+  .about-circular-wrap .name {
+    color: var(--orange) !important;
+    font-size: clamp(1rem, 4.35vw, 1.22rem) !important;
+    line-height: 1.08 !important;
+    margin: 0 0 6px !important;
+  }
+
+  .about-circular-wrap .designation {
+    color: var(--white) !important;
+    font-size: clamp(0.68rem, 2.88vw, 0.8rem) !important;
+    line-height: 1.22 !important;
+    margin: 0 !important;
+  }
+
+  .about-circular-wrap .quote {
+    color: rgba(255, 255, 255, 0.86) !important;
+    font-size: clamp(0.7rem, 2.95vw, 0.82rem) !important;
+    line-height: 1.34 !important;
+    margin: 0 !important;
+    max-height: calc(1.34em * 4);
+    overflow: hidden;
+  }
+
+  .about-circular-socials {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(42px, 1fr));
+    gap: 8px !important;
+    align-items: center;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .about-circular-social {
+    min-height: 44px;
+    height: 44px;
+    width: 100%;
+    justify-content: center;
+    padding: 0;
+    gap: 0;
+    font-size: 0;
+    line-height: 0;
+  }
+
+  .about-circular-social svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .about-circular-social .about-brand-icon,
+  .about-circular-social .about-brand-icon-fiverr,
+  .about-circular-social .about-brand-icon-upwork {
+    width: 21px;
+    height: 21px;
   }
 
   .sw-slider-wrap {
