@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import ChatAgent from "@/components/ChatAgent";
 import { absoluteUrl, siteConfig } from "@/lib/site";
 import "./globals.css";
@@ -76,6 +77,7 @@ export default function RootLayout({
       <body className={`${inter.variable} antialiased`}>
         {children}
         <ChatAgent />
+        <Analytics />
       </body>
     </html>
   );
