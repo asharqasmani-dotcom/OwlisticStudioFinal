@@ -15,6 +15,11 @@ const Header = () => {
   };
 
   useEffect(() => {
+    document.body.classList.toggle('nav-menu-lock', isOpen);
+    return () => document.body.classList.remove('nav-menu-lock');
+  }, [isOpen]);
+
+  useEffect(() => {
     const flipButtons = document.querySelectorAll('.btn');
     flipButtons.forEach((button) => {
       const label = button.textContent?.trim();
@@ -77,7 +82,7 @@ const Header = () => {
           />
         </Link>
 
-        <ul className="nav-links">
+        <ul className="nav-links" id="primary-navigation">
           <li>
             <Link href="/" className={`nav-item${isActive('/') ? ' nav-link-active' : ''}`} onClick={closeMenu}>Home</Link>
           </li>
@@ -195,6 +200,7 @@ const Header = () => {
           onClick={() => setIsOpen(!isOpen)}
           aria-label={isOpen ? "Close menu" : "Open menu"}
           aria-expanded={isOpen}
+          aria-controls="primary-navigation"
         >
           <span></span>
           <span></span>
